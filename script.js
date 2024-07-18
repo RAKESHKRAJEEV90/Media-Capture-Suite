@@ -85,7 +85,7 @@ function handleRecord(stream) {
     };
     
     mediaRecorder.onstop = () => {
-        recordingBlob = new Blob(recordedChunks, {type: 'video/webm'});
+        recordingBlob = new Blob(recordedChunks, {type: 'video/mp4'});
         recordedVideo.src = URL.createObjectURL(recordingBlob);
         recordingPreview.classList.remove('hidden');
     };
@@ -149,7 +149,7 @@ function downloadRecording() {
         document.body.appendChild(a);
         a.style = 'display: none';
         a.href = url;
-        a.download = 'recording.webm';
+        a.download = 'recording.mp4';
         a.click();
         window.URL.revokeObjectURL(url);
     }
