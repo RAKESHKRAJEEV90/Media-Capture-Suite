@@ -146,14 +146,15 @@ button:disabled {
     background-color: #333;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 10px;
     border-radius: 50%;
     cursor: pointer;
     z-index: 10; /* Ensure it stays on top */
 }
 
 .night-mode-toggle.night-mode {
-    background-color: #ff9800;
+    color: #ff9800;
+    background-color:#e7f3fe
 }
 
 body.night-mode {

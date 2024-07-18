@@ -51,15 +51,13 @@ async function initiateRecording(type) {
     try {
         switch (type) {
             case 'screen':
-                const displayMediaOptions = {
-                    video: true,
-                    audio: true
-                };
-                stream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
-                
-                // if (includeAudioCheckbox.checked && !stream.getAudioTracks().length) {
-                //     showErrorModal("Audio capture was not possible. Recording video only.");
-                // }
+                const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const stream  = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                const audioTrack = audioStream.getAudioTracks()[0];
+                stream.addTrack(audioTrack);
+        
+                handleRecord(stream);
+                setButtonStates(true);
                 break;
             case 'audioVideo':
                 stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
