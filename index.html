@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Capture Suite</title>
+   <link href="./style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Media Capture Suite</h1>
+        
+        <div class="info-text">
+            <p>For Screen Recording: Choose whether to include audio. Audio capture may be limited by your browser and operating system.</p>
+        </div>
+
+        <!-- <div class="checkbox-group">
+            <input type="checkbox" id="includeAudio" checked>
+            <label for="includeAudio">Include audio in screen recording</label>
+        </div> -->
+
+        <div class="button-group">
+            <button id="screenRecordBtn" class="start-btn">Screen Recording</button>
+            <button id="audioVideoBtn" class="start-btn">Audio/Video Recording</button>
+            <button id="pauseResumeBtn" class="pause-btn" disabled>Pause</button>
+            <button id="stopBtn" class="stop-btn" disabled>Stop Recording</button>
+            <button id="screenshotBtn" class="screenshot-btn">Take Screenshot</button>
+        </div>
+
+        <video id="preview" autoplay muted></video>
+
+        <div id="recordingPreview" class="hidden">
+            <h2>Recording Preview</h2>
+            <video id="recordedVideo" controls></video>
+            <div class="button-group">
+                <button id="downloadBtn" class="download-btn">Download Recording</button>
+            </div>
+        </div>
+
+        <div id="screenshotPreview" class="hidden">
+            <h2>Screenshot Preview</h2>
+            <img id="screenshotImg" alt="Screenshot">
+            <div class="button-group">
+                <button id="downloadScreenshotBtn" class="download-btn">Download Screenshot</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <p>Starting a new recording or screenshot will discard the current preview. Continue?</p>
+            <div class="modal-buttons">
+                <button id="confirmYes">Yes</button>
+                <button id="confirmNo">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <p id="errorMessage"></p>
+            <div class="modal-buttons">
+                <button id="errorOk">OK</button>
+            </div>
+        </div>
+    </div>
+<script src="./script.js"></script>
+   
+</body>
+</html>
