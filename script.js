@@ -18,6 +18,7 @@ const confirmModal = document.getElementById('confirmModal');
 const confirmYes = document.getElementById('confirmYes');
 const confirmNo = document.getElementById('confirmNo');
 const nightModeToggle = document.getElementById('nightModeToggle');
+const includeAudioCheckbox = document.getElementById('includeAudioCheckbox');
 
 screenRecordBtn.addEventListener('click', () => startRecording('screen'));
 audioVideoBtn.addEventListener('click', () => startRecording('audioVideo'));
@@ -46,14 +47,23 @@ async function startRecording(type) {
     }
 }
 
-const includeAudioCheckbox = document.getElementById('includeAudioCheckbox');
 
 async function initiateRecording(type) {
     try {
+        if (!navigator.mediaDevices) {
+            showErrorModal("Media devices are not supported on this device.");
+            return;
+        }
+
         const includeAudio = includeAudioCheckbox.checked;
-        
+
         switch (type) {
             case 'screen':
+                if (!navigator.mediaDevices.getDisplayMedia) {
+                    showErrorModal("Screen recording is not supported on this device.");
+                    return;
+                }
+
                 if (includeAudio) {
                     const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
@@ -83,6 +93,7 @@ async function initiateRecording(type) {
         showErrorModal("An error occurred while trying to start the recording. Please make sure you've granted the necessary permissions.");
     }
 }
+
 
 
 function handleRecord(stream) {
@@ -147,6 +158,11 @@ function startScreenshot() {
 
 async function takeScreenshot() {
     try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+            showErrorModal("Screen capture is not supported on this device.");
+            return;
+        }
+
         const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
         const track = stream.getVideoTracks()[0];
         const video = document.createElement('video');
