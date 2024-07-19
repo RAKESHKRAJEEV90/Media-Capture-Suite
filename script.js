@@ -149,22 +149,30 @@ async function takeScreenshot() {
     try {
         const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
         const track = stream.getVideoTracks()[0];
-        const imageCapture = new ImageCapture(track);
-        const bitmap = await imageCapture.grabFrame();
-        const canvas = document.createElement('canvas');
-        canvas.width = bitmap.width;
-        canvas.height = bitmap.height;
-        canvas.getContext('2d').drawImage(bitmap, 0, 0);
-        const screenshotImg = document.getElementById('screenshotImg');
-        screenshotImg.src = canvas.toDataURL('image/png');
-        screenshotPreview.classList.remove('hidden');
-        recordingPreview.classList.add('hidden');
-        track.stop();
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.play();
+
+        video.addEventListener('loadeddata', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const screenshotImg = document.getElementById('screenshotImg');
+            screenshotImg.src = canvas.toDataURL('image/png');
+            screenshotPreview.classList.remove('hidden');
+            recordingPreview.classList.add('hidden');
+
+            track.stop();
+        });
     } catch (err) {
         console.error("Error taking screenshot:", err);
         showErrorModal("An error occurred while taking the screenshot. Please try again.");
     }
 }
+
 
 function downloadRecording() {
     if (recordingBlob) {
