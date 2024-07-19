@@ -46,18 +46,30 @@ async function startRecording(type) {
     }
 }
 
+const includeAudioCheckbox = document.getElementById('includeAudioCheckbox');
+
 async function initiateRecording(type) {
     try {
+        const includeAudio = includeAudioCheckbox.checked;
+        
         switch (type) {
             case 'screen':
-                const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-                const audioTrack = audioStream.getAudioTracks()[0];
-                screenStream.addTrack(audioTrack);
-                stream = screenStream;
+                if (includeAudio) {
+                    const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                    const audioTrack = audioStream.getAudioTracks()[0];
+                    screenStream.addTrack(audioTrack);
+                    stream = screenStream;
+                } else {
+                    stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                }
                 break;
             case 'audioVideo':
-                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                if (includeAudio) {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                } else {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                }
                 break;
             default:
                 showErrorModal("Invalid recording type specified.");
@@ -71,6 +83,7 @@ async function initiateRecording(type) {
         showErrorModal("An error occurred while trying to start the recording. Please make sure you've granted the necessary permissions.");
     }
 }
+
 
 function handleRecord(stream) {
     clearPreviousRecording();

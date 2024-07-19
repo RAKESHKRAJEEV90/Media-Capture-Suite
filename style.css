@@ -232,3 +232,31 @@ body.night-mode h2 {
         text-align: center;
     }
 }
+
+/* Style for the label and checkbox */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2); /* Increase the size of the checkbox */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .checkbox-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+        margin-bottom: 15px;
+        transform: scale(1.5); /* Further increase the size of the checkbox on small screens */
+    }
+}
+
