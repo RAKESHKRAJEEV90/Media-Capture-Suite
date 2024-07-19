@@ -17,7 +17,6 @@ const downloadScreenshotBtn = document.getElementById('downloadScreenshotBtn');
 const confirmModal = document.getElementById('confirmModal');
 const confirmYes = document.getElementById('confirmYes');
 const confirmNo = document.getElementById('confirmNo');
-//const includeAudioCheckbox = document.getElementById('includeAudio');
 const nightModeToggle = document.getElementById('nightModeToggle');
 
 screenRecordBtn.addEventListener('click', () => startRecording('screen'));
@@ -52,17 +51,19 @@ async function initiateRecording(type) {
         switch (type) {
             case 'screen':
                 const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const stream  = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
                 const audioTrack = audioStream.getAudioTracks()[0];
-                stream.addTrack(audioTrack);
-        
-                handleRecord(stream);
-                setButtonStates(true);
+                screenStream.addTrack(audioTrack);
+                stream = screenStream;
                 break;
             case 'audioVideo':
-                stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 break;
+            default:
+                showErrorModal("Invalid recording type specified.");
+                return;
         }
+
         handleRecord(stream);
         setButtonStates(true);
     } catch (err) {
@@ -75,15 +76,15 @@ function handleRecord(stream) {
     clearPreviousRecording();
     preview.srcObject = stream;
     mediaRecorder = new MediaRecorder(stream);
-    
+
     mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
             recordedChunks.push(event.data);
         }
     };
-    
+
     mediaRecorder.onstop = () => {
-        recordingBlob = new Blob(recordedChunks, {type: 'video/mp4'});
+        recordingBlob = new Blob(recordedChunks, { type: 'video/mp4' });
         recordedVideo.src = URL.createObjectURL(recordingBlob);
         recordingPreview.classList.remove('hidden');
     };
@@ -92,20 +93,32 @@ function handleRecord(stream) {
 }
 
 function togglePauseResume() {
-    if (mediaRecorder.state === 'recording') {
-        mediaRecorder.pause();
-        pauseResumeBtn.textContent = 'Resume';
-    } else if (mediaRecorder.state === 'paused') {
-        mediaRecorder.resume();
-        pauseResumeBtn.textContent = 'Pause';
+    if (mediaRecorder) {
+        if (mediaRecorder.state === 'recording') {
+            mediaRecorder.pause();
+            pauseResumeBtn.textContent = 'Resume';
+        } else if (mediaRecorder.state === 'paused') {
+            mediaRecorder.resume();
+            pauseResumeBtn.textContent = 'Pause';
+        }
+    } else {
+        console.error("MediaRecorder is not initialized.");
     }
 }
 
 function stopRecording() {
-    mediaRecorder.stop();
-    stream.getTracks().forEach(track => track.stop());
-    setButtonStates(false);
-    preview.srcObject = null;
+    if (mediaRecorder) {
+        mediaRecorder.stop();
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            preview.srcObject = null;
+        } else {
+            console.error("Stream is not defined.");
+        }
+        setButtonStates(false);
+    } else {
+        console.error("MediaRecorder is not initialized.");
+    }
 }
 
 function startScreenshot() {
@@ -121,7 +134,7 @@ function startScreenshot() {
 
 async function takeScreenshot() {
     try {
-        const stream = await navigator.mediaDevices.getDisplayMedia({video: true});
+        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
         const track = stream.getVideoTracks()[0];
         const imageCapture = new ImageCapture(track);
         const bitmap = await imageCapture.grabFrame();
