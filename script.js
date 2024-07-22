@@ -257,6 +257,8 @@ function showErrorModal(message) {
 }
 
 function toggleNightMode() {
+
+    
     document.body.classList.toggle('night-mode');
     nightModeToggle.classList.toggle('night-mode');
     nightModeToggle.textContent = nightModeToggle.classList.contains('night-mode') ? '☀️' : '🌙';

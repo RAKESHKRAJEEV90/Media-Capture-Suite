@@ -4,7 +4,7 @@ body {
     margin: 0 auto;
     padding: 20px;
     background-color: whitesmoke;
-  background-image: url("https://www.transparenttextures.com/patterns/lyonnette.png");
+    background-image: url("https://www.transparenttextures.com/patterns/lyonnette.png");
     transition: background-color 0.3s, color 0.3s;
     position: relative; /* Ensure relative positioning for absolute children */
 }
@@ -14,7 +14,7 @@ body {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
@@ -37,7 +37,7 @@ button {
     cursor: pointer;
     border: none;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, opacity 0.3s;
 }
 
 .start-btn {
@@ -45,14 +45,34 @@ button {
     color: white;
 }
 
-.stop-btn {
-    background-color: #f44336;
+/* Base styles for buttons */
+.pause-btn, .stop-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+/* Light mode styles */
+.pause-btn {
+    background-color: #ffa500;
     color: white;
 }
 
-.pause-btn {
-    background-color: #ff9800;
+.stop-btn {
+    background-color: #ff4136;
     color: white;
+}
+
+.pause-btn:hover, .stop-btn:hover {
+    opacity: 0.8;
+}
+
+.pause-btn:disabled, .stop-btn:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
 }
 
 .screenshot-btn {
@@ -95,16 +115,16 @@ button:disabled {
     display: none;
 }
 
+/* Modal base styles */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1001;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
@@ -114,14 +134,62 @@ button:disabled {
     border: 1px solid #888;
     width: 80%;
     max-width: 500px;
-    border-radius: 8px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Error modal specific styles */
+#errorModal .modal-content {
+    border-top: 4px solid #ff4136;
+}
+
+#errorMessage {
+    color: #333;
+    margin-bottom: 20px;
 }
 
 .modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
+    text-align: right;
+}
+
+.modal-buttons button {
+    padding: 8px 16px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#errorOk, #confirmYes, #confirmNo {
+    background-color: #ff4136;
+    color: white;
+}
+
+#errorOk:hover, #confirmYes:hover, #confirmNo:hover {
+    background-color: #e53a30;
+}
+
+/* Dark mode styles */
+.night-mode .modal-content {
+    background-color: #2c3e50;
+    border-color: #34495e;
+}
+
+.night-mode #errorModal .modal-content {
+    border-top-color: #e74c3c;
+}
+
+.night-mode #errorMessage {
+    color: #ecf0f1;
+}
+
+.night-mode #errorOk, .night-mode #confirmYes, .night-mode #confirmNo {
+    background-color: #e74c3c;
+}
+
+.night-mode #errorOk:hover, .night-mode #confirmYes:hover, .night-mode #confirmNo:hover {
+    background-color: #c0392b;
 }
 
 .info-text {
@@ -154,7 +222,7 @@ button:disabled {
 
 .night-mode-toggle.night-mode {
     color: #ff9800;
-    background-color:#e7f3fe
+    background-color: #e7f3fe;
 }
 
 body.night-mode {
@@ -175,12 +243,26 @@ body.night-mode {
     background-color: #4CAF50;
 }
 
-.night-mode .stop-btn {
-    background-color: #f44336;
+.night-mode .pause-btn {
+    background-color: #c78100;
+    color: white;
 }
 
-.night-mode .pause-btn {
-    background-color: #ff9800;
+.night-mode .stop-btn {
+    background-color: #b22e27;
+    color: white;
+}
+
+.night-mode .pause-btn:disabled, .night-mode .stop-btn:disabled {
+    background-color: #4a4a4a;
+    color: #999999;
+}
+
+/* Add a subtle indication that the button is disabled */
+.pause-btn:disabled::after, .stop-btn:disabled::after {
+    content: " (inactive)";
+    font-size: 0.8em;
+    opacity: 0.7;
 }
 
 .night-mode .screenshot-btn {
@@ -231,25 +313,7 @@ body.night-mode h2 {
     body.night-mode h2 {
         text-align: center;
     }
-}
 
-/* Style for the label and checkbox */
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    margin-left: 25px;
-
-}
-
-.checkbox-container input[type="checkbox"] {
-    margin-right: 10px;
-    transform: scale(1.2); /* Increase the size of the checkbox */
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
     .checkbox-container {
         flex-direction: column;
         align-items: flex-start;
@@ -261,3 +325,85 @@ body.night-mode h2 {
     }
 }
 
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    margin-top: 40px;
+    border-top: 1px solid #e7e7e7;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer p {
+    margin: 0;
+    color: #6c757d;
+}
+
+.donation-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.donation-button {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.donation-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.coffee-button img {
+    height: 40px;
+}
+
+.paypal-button {
+    background-color: #0070ba;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px 12px;
+}
+
+.paypal-button img {
+    height: 20px;
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .donation-buttons {
+        margin-top: 15px;
+    }
+}
+
+/* Night mode styles */
+.night-mode .footer {
+    background-color: #2c3e50;
+    border-top-color: #34495e;
+}
+
+.night-mode .footer p {
+    color: #bdc3c7;
+}
+
+.night-mode .paypal-button {
+    background-color: #f6f6f6;
+    color: #000000;
+}
